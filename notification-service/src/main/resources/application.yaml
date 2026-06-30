@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: development
+  config:
+    import: "optional:configserver:http://localhost:9690"
+  cloud:
+    config:
+      name: db-config,kafka,redis-server,notification-service
+spring.cloud.compatibility-verifier.enabled: false
+server.port: 8083

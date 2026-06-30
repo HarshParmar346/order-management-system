@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: order-service
+  profiles:
+    active: development
+  config:
+    import: "optional:configserver:http://localhost:9690"
+  cloud:
+    config:
+      name: db-config,kafka,order-service
+spring.cloud.compatibility-verifier.enabled: false
