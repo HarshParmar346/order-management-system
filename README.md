@@ -119,27 +119,3 @@ outbox publishing including a corrupted-payload case, inventory reservation incl
 insufficient-stock and Redis-lock-contention paths, payment success/failure/idempotency, and
 notification persistence) using JUnit 5 + Mockito. They run against mocked repositories/Kafka/
 Redis, so no Docker or DB is required.
-
-## Known limitations / possible next steps
-
-- No integration tests (e.g. Testcontainers) exercising the real Kafka → service → DB path end
-  to end — the current tests are unit-level, mocking collaborators.
-- No API documentation (OpenAPI/Swagger) for `order-service`'s REST endpoint.
-- No dead-letter-queue consumers for `payment-dlt` / `inventory-dlt`, even though those topics
-  are already defined in `KafkaTopics`.
-- No CI pipeline (GitHub Actions, etc.) running the build/tests on push.
-- The payment "gateway" is simulated with a random 90% success rate rather than calling a real
-  provider — fine for demonstrating the saga/event flow, not representative of a production
-  payment integration.
-
-## Changelog (from initial import)
-
-- Fixed `pom.xml` referencing a non-existent `root` module, which broke `mvn install` on the
-  reactor.
-- Fixed a bug in `NotificationServiceImpl.sendFailure` where failure notifications were
-  incorrectly tagged with `type = "SUCCESS"` instead of `"FAILURE"`.
-- Added unit test suites for all four services.
-- Completed `docker-compose.yaml` (previously only defined Zookeeper + Kafka, and had an
-  advertised-listener config that would have broken container-to-container Kafka access) and
-  added a `Dockerfile` per service.
-- Added this README.
