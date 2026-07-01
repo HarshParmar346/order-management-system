@@ -1,10 +1,10 @@
 package com.harsh.inventory.config;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -12,31 +12,28 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.harsh.common.event.InventoryReservedEvent;
-import com.harsh.common.event.OrderCreatedEvent;
-
 @Configuration
 public class KafkaProducerConfig {
 
 	@Bean
-	public ProducerFactory<String, Object> producerFactory() {
+	public ProducerFactory<String, Object> producerFactory(KafkaProperties kafkaProperties) {
 
-		Map<String, Object> config = new HashMap<>();
+		Map<String, Object> props = kafkaProperties.buildConsumerProperties();
 
-		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+//		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
-		config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
-		config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
-		return new DefaultKafkaProducerFactory<>(config);
+		return new DefaultKafkaProducerFactory<>(props);
 
 	}
 
 	@Bean
-	public KafkaTemplate<String, Object> kafkaTemplate() {
+	public KafkaTemplate<String, Object> kafkaTemplate(KafkaProperties properties) {
 
-		return new KafkaTemplate<>(producerFactory());
+		return new KafkaTemplate<>(producerFactory(properties));
 
 	}
 

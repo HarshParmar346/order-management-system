@@ -4,9 +4,9 @@ spring:
   profiles:
     active: development
   config:
-    import: "optional:configserver:http://localhost:9690"
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:9690}"
   cloud:
     config:
-      name: db-config,kafka,redis-server,inventoy-service
+      name: db-config,kafka,redis-server,inventory-service
 spring.cloud.compatibility-verifier.enabled: false
 server.port: 8081

@@ -1,0 +1,11 @@
+redis:
+  host: redis
+  port: 6379
+  pool:
+    maxTotal: 2
+    maxIdle: 10
+    minIdle: 2
+    maxWait: 2
+    testOnBorrow: true
+    testOnReturn: true
+    testWhileIdle: false

@@ -21,6 +21,8 @@ public class KafkaConsumerConfig {
 
 		Map<String, Object> props = kafkaProperties.buildConsumerProperties();
 
+		System.err.println(props);
+
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
