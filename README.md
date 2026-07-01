@@ -11,35 +11,35 @@ payment processing via asynchronous, choreographed events instead of synchronous
                 POST /orders
                      │
                      ▼
-             ┌───────────────┐        outbox table         ┌──────────────┐
+             ┌───────────────┐        outbox table          ┌──────────────┐
              │ order-service │ ───────(polled every 5s)───▶ │    Kafka     │
-             │  (Oracle DB)  │                               │ order-created│
-             └───────────────┘                               └──────┬───────┘
-                     ▲                                               │
-                     │                                               ▼
-                     │                                       ┌─────────────────┐
-                     │                                       │ inventory-service│
-                     │                                       │ (Oracle + Redis  │
-                     │                                       │  distributed     │
-                     │                                       │  lock per SKU)   │
-                     │                                       └────────┬─────────┘
-                     │                                                │
-                     │                              inventory-reserved / inventory-failed
-                     │                                                │
-                     │            inventory-failed ──▶ order CANCELLED│
-                     └────────────────────────────────────────────────┤
-                                                                       ▼
-             ┌─────────────────┐    inventory-reserved        ┌─────────────────┐
-             │ payment-service │ ◀───────────────────────────  │      Kafka      │
-             │  (Oracle DB)    │                               └────────┬────────┘
-             └────────┬────────┘                                        │
-                      │                                                  │
-        payment-success / payment-failed                  payment-success / payment-failed
-                      │                                                  │
-                      ▼                                                  ▼
-             ┌────────────────┐                             ┌────────────────────┐
-             │      Kafka      │ ──────────────────────────▶ │ notification-service│
-             └────────────────┘                              │    (Oracle DB)      │
+    ┌──────▶│  (Oracle DB)  │                               │ order-created│
+    |        └───────────────┘                               └──────┬───────┘
+    |                ▲                                               │
+    |                │                                               ▼
+    |                │                                       ┌─────────────────┐
+    |                │                                       │ inventory-service│
+    |                │                                       │ (Oracle + Redis  │
+    |                │                                       │  distributed     │
+    |                │                                       │  lock per SKU)   │
+    |                │                                       └────────┬─────────┘
+    |                │                                                │
+    |                │                              inventory-reserved / inventory-failed
+    |                │                                                │
+    |                │        inventory-failed ──▶ order CANCELLED    │
+    |                └────────────────────────────────────────────────┤
+  payment-success                                                     ▼
+    |        ┌─────────────────┐    inventory-reserved        ┌─────────────────┐
+    |        │ payment-service │ ◀───────────────────────────  │      Kafka      │
+    |        │  (Oracle DB)    │                               └────────┬────────┘
+    |        └────────┬────────┘                                        │
+    |                 │                                                  │
+    |   payment-success / payment-failed                  payment-success / payment-failed
+    |                 │                                                  │
+    |                 ▼                                                  ▼
+    |        ┌────────────────┐                                ┌────────────────────┐
+    └────────│      Kafka     │ ────────────────────────────▶ | notification-service│
+             └────────────────┘                                │    (Oracle DB)      │
                                                                └────────────────────┘
 ```
 
