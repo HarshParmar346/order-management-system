@@ -42,7 +42,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 			Inventory inventory = repository.findById(event.getProductId()).orElseThrow();
 
-			if (inventory.getQuantity() < event.getQuantity()) {
+			if (inventory == null || inventory.getQuantity() < event.getQuantity()) {
 
 				producer.publishFailed(
 
@@ -52,7 +52,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 								.orderId(event.getOrderId())
 
-								.reason("Insufficient stock")
+								.reason(inventory == null ? "No Such Product Exists" : "InsufficientStock")
 
 								.build()
 
